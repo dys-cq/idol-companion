@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useStore } from '../store'
+import { updateFateStats } from './FateSystem'
 import './IdolMoments.css'
 
 // 礼物列表
@@ -142,6 +143,9 @@ function IdolMoments({ onClose }) {
     const newCoins = userCoins - gift.price
     setUserCoins(newCoins)
     localStorage.setItem('user-coins', newCoins.toString())
+
+    // 更新命运系统统计
+    updateFateStats(currentIdol?.name, 'gift', 1)
 
     // 更新动态，添加礼物记录
     setMoments(prev => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useStore } from '../store'
+import { updateFateStats } from './FateSystem'
 import './DreamWeaver.css'
 
 function DreamWeaver({ onClose }) {
@@ -136,6 +137,9 @@ function DreamWeaver({ onClose }) {
       setDreams(updatedDreams)
       saveDreams(updatedDreams)  // 使用新的保存函数
       
+      // 更新命运系统统计
+      updateFateStats(currentIdol?.name, 'dream', 1)
+      
       setDreamInput('')
     } catch (error) {
       console.error('生成梦境失败:', error)
@@ -152,6 +156,8 @@ function DreamWeaver({ onClose }) {
       const updatedDreams = [newDream, ...dreams]
       setDreams(updatedDreams)
       saveDreams(updatedDreams)
+      // 更新命运系统统计
+      updateFateStats(currentIdol?.name, 'dream', 1)
     }
     setGenerating(false)
   }
@@ -181,6 +187,9 @@ function DreamWeaver({ onClose }) {
       const updatedDreams = [newDream, ...dreams]
       setDreams(updatedDreams)
       saveDreams(updatedDreams)  // 使用新的保存函数
+      
+      // 更新命运系统统计
+      updateFateStats(currentIdol?.name, 'dream', 1)
     } catch (error) {
       console.error('生成随机梦境失败:', error)
     }

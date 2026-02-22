@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useStore } from './store'
+import { updateFateStats } from './components/FateSystem'
 
 // API配置
 // 开发环境使用完整URL，生产环境使用相对路径
@@ -81,6 +82,9 @@ export async function sendMessage(userMessage) {
     
     // 添加AI回复
     addMessage('assistant', assistantMessage)
+    
+    // 更新命运系统统计
+    updateFateStats(currentIdol?.name, 'chat', 1)
     
     // 提取并保存用户信息（简单实现）
     extractUserInfo(userMessage, assistantMessage)

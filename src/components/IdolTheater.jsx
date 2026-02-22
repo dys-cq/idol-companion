@@ -101,16 +101,41 @@ function IdolTheater({ onClose }) {
       })
       const data = await response.json()
       
-      if (data.dialogue) {
+      if (data.dialogue && data.dialogue.length > 0) {
         setDialogue(data.dialogue.map((line, idx) => ({
           ...line,
           id: Date.now() + idx
         })))
+      } else {
+        // 使用默认开场白
+        generateFallbackOpening(scene, cast)
       }
     } catch (error) {
       console.error('生成开场失败:', error)
+      // 使用默认开场白
+      const shuffledActors = [...actors].sort(() => Math.random() - 0.5)
+      const cast = scene.roles.map((role, idx) => ({
+        role,
+        actor: shuffledActors[idx % shuffledActors.length] || { name: '神秘人', avatar: '🎭' }
+      }))
+      generateFallbackOpening(scene, cast)
     }
     setLoading(false)
+  }
+
+  const generateFallbackOpening = (scene, cast) => {
+    const openingLines = [
+      { content: `${scene.setting}`, isNarrator: true },
+      { content: '各位，今天我们聚在这里...', actor: cast[0]?.actor, role: cast[0]?.role },
+      { content: '是啊，这可真是个特别的时刻。', actor: cast[1]?.actor, role: cast[1]?.role }
+    ]
+    
+    setDialogue(openingLines.map((line, idx) => ({
+      ...line,
+      id: Date.now() + idx,
+      role: line.role || '旁白',
+      actor: line.actor || { name: '旁白', avatar: '📖' }
+    })))
   }
 
   const continueDialogue = async () => {
@@ -141,17 +166,37 @@ function IdolTheater({ onClose }) {
       })
       const data = await response.json()
       
-      if (data.responses) {
+      if (data.responses && data.responses.length > 0) {
         const newLines = data.responses.map((line, idx) => ({
           ...line,
           id: Date.now() + idx + 1
         }))
         setDialogue(prev => [...prev, ...newLines])
+      } else {
+        // 使用默认回复
+        generateFallbackResponse()
       }
     } catch (error) {
       console.error('继续对话失败:', error)
+      // 使用默认回复
+      generateFallbackResponse()
     }
     setLoading(false)
+  }
+
+  const generateFallbackResponse = () => {
+    const fallbackLines = [
+      { content: '嗯...让我想想...', actor: currentIdol, role: '主角' },
+      { content: '你说得很有道理，我同意你的看法。', actor: currentIdol, role: '主角' }
+    ]
+    const randomLine = fallbackLines[Math.floor(Math.random() * fallbackLines.length)]
+    
+    setDialogue(prev => [...prev, {
+      ...randomLine,
+      id: Date.now(),
+      role: randomLine.role || '角色',
+      actor: randomLine.actor || { name: currentIdol?.name || 'Idol', avatar: currentIdol?.avatar || '🎭' }
+    }])
   }
 
   const endScene = () => {
