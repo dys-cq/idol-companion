@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #E94560;
+  --primary-dark: #C73E57;
+  --bg-dark: #1A1A2E;
+  --bg-medium: #16213E;
+  --bg-light: #0F3460;
+  --text-primary: #FFFFFF;
+  --text-secondary: #8B8B8B;
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-medium);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.bounce {
+  animation: bounce 0.5s ease-in-out;
+}
+
+/* 消息气泡 */
+.message-user {
+  background: var(--primary);
+  border-radius: 16px 16px 4px 16px;
+}
+
+.message-assistant {
+  background: var(--bg-light);
+  border-radius: 16px 16px 16px 4px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: scale(1.02);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* 输入框 */
+.input-message {
+  background: var(--bg-light);
+  border: none;
+  border-radius: 24px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+}
+
+.input-message::placeholder {
+  color: var(--text-secondary);
+}
+
+/* 语音按钮动画 */
+.voice-btn.recording {
+  animation: pulse 1s infinite;
+  background: var(--primary) !important;
+}

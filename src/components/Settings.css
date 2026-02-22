@@ -1,0 +1,217 @@
+.settings-modal {
+  max-width: 400px;
+}
+
+.settings-content {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 偶像切换列表 */
+.idol-switch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.idol-switch-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-light);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.idol-switch-item:hover {
+  background: var(--bg-dark);
+}
+
+.idol-switch-item.active {
+  border-color: var(--primary);
+  background: rgba(233, 69, 96, 0.1);
+}
+
+.idol-switch-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: var(--bg-dark);
+}
+
+.idol-switch-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.idol-switch-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.idol-switch-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.idol-switch-occupation {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.current-badge {
+  font-size: 12px;
+  color: var(--primary);
+  background: rgba(233, 69, 96, 0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.delete-idol-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 4px;
+  transition: opacity 0.2s;
+}
+
+.delete-idol-btn:hover {
+  opacity: 1;
+}
+
+.no-idol {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-light);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.setting-item:hover {
+  background: var(--bg-dark);
+}
+
+.setting-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+}
+
+.memory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.memory-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  background: var(--bg-light);
+  border-radius: 12px;
+}
+
+.memory-key {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.memory-value {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.no-memory {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
+}
+
+.danger-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.danger-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.create-idol-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, #E94560 100%);
+  border: none;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.create-idol-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+}
+
+.about {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--bg-light);
+}
+
+.about p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.copyright {
+  opacity: 0.5;
+}

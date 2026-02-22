@@ -1,0 +1,150 @@
+/* 短信样式 */
+.messages-modal {
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.unread-badge {
+  background: var(--primary-color, #E94560);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+.messages-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.messages-list {
+  padding: 16px;
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color, #333);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.message-item:hover {
+  background: var(--card-bg, #1e1e2e);
+}
+
+.message-item.unread {
+  background: rgba(233, 69, 96, 0.05);
+}
+
+.item-avatar {
+  font-size: 28px;
+  position: relative;
+}
+
+.unread-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: var(--primary-color, #E94560);
+  border-radius: 50%;
+}
+
+.item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.item-name {
+  font-weight: 600;
+}
+
+.item-time {
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+}
+
+.item-preview {
+  color: var(--text-secondary, #888);
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty-hint {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-hint p {
+  color: var(--text-secondary, #888);
+}
+
+/* 短信详情 */
+.message-detail {
+  padding: 16px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #888);
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 16px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-avatar {
+  font-size: 40px;
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-name {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.detail-time {
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+}
+
+.detail-content {
+  background: var(--card-bg, #1e1e2e);
+  border-radius: 16px;
+  padding: 20px;
+  line-height: 1.8;
+  font-size: 16px;
+}

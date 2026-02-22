@@ -1,0 +1,94 @@
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message-user-wrapper {
+  justify-content: flex-end;
+}
+
+.message-assistant-wrapper {
+  justify-content: flex-start;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.message-avatar.user {
+  background: var(--primary);
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 12px 16px;
+  position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.message-user {
+  background: var(--primary);
+  border-radius: 16px 16px 4px 16px;
+}
+
+.message-assistant {
+  background: var(--bg-light);
+  border-radius: 16px 16px 16px 4px;
+}
+
+.message-content {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.message-time {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.speak-btn {
+  position: absolute;
+  right: -30px;
+  bottom: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.message-bubble:hover .speak-btn {
+  opacity: 0.7;
+}
+
+.speak-btn:hover {
+  opacity: 1 !important;
+}
+
+@media (max-width: 480px) {
+  .message-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+  }
+
+  .message-content {
+    font-size: 14px;
+  }
+}

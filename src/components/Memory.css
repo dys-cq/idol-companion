@@ -1,0 +1,131 @@
+/* 记忆样式 */
+.memory-modal {
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.memory-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.idol-selector {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #333);
+  overflow-x: auto;
+}
+
+.idol-btn {
+  padding: 8px 16px;
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 20px;
+  color: var(--text-color, #fff);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.idol-btn.active {
+  background: var(--primary-color, #E94560);
+  border-color: var(--primary-color, #E94560);
+}
+
+.search-box {
+  padding: 12px 16px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--border-color, #333);
+  background: var(--card-bg, #1e1e2e);
+  color: var(--text-color, #fff);
+}
+
+.messages-timeline {
+  padding: 16px;
+}
+
+.date-group {
+  margin-bottom: 24px;
+}
+
+.date-label {
+  text-align: center;
+  color: var(--text-secondary, #888);
+  font-size: 12px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.date-label::before,
+.date-label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: var(--border-color, #333);
+}
+
+.date-label::before {
+  left: 0;
+}
+
+.date-label::after {
+  right: 0;
+}
+
+.memory-item {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--card-bg, #1e1e2e);
+}
+
+.memory-item.user {
+  background: rgba(233, 69, 96, 0.1);
+  margin-left: 20px;
+}
+
+.memory-item.assistant {
+  margin-right: 20px;
+}
+
+.item-role {
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+  margin-bottom: 4px;
+}
+
+.item-content {
+  line-height: 1.6;
+}
+
+.item-time {
+  font-size: 11px;
+  color: var(--text-secondary, #888);
+  text-align: right;
+  margin-top: 8px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  color: var(--text-secondary, #888);
+}
