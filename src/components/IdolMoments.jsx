@@ -26,21 +26,26 @@ function IdolMoments({ onClose }) {
   const [newComment, setNewComment] = useState('')
   const [sending, setSending] = useState(false)
 
+  // 获取稳定的存储 key（基于 idol name）
+  const getStorageKey = () => `moments-${currentIdol?.name || 'default'}`
+
   useEffect(() => {
-    loadMoments()
-  }, [currentIdol])
+    if (currentIdol?.name) {
+      loadMoments()
+    }
+  }, [currentIdol?.name])
 
   const loadMoments = async () => {
     setLoading(true)
     try {
-      // 从 localStorage 加载已有动态
-      const savedMoments = JSON.parse(localStorage.getItem(`moments-${currentIdol?.id}`) || '[]')
+      const key = getStorageKey()
+      const savedMoments = JSON.parse(localStorage.getItem(key) || '[]')
+      console.log('📱 加载朋友圈:', key, savedMoments.length, '条')
       
       if (savedMoments.length === 0) {
-        // 生成初始动态
         const initialMoments = await generateInitialMoments()
         setMoments(initialMoments)
-        localStorage.setItem(`moments-${currentIdol?.id}`, JSON.stringify(initialMoments))
+        saveMoments(initialMoments)
       } else {
         setMoments(savedMoments)
       }
@@ -48,6 +53,12 @@ function IdolMoments({ onClose }) {
       console.error('加载动态失败:', error)
     }
     setLoading(false)
+  }
+
+  const saveMoments = (newMoments) => {
+    const key = getStorageKey()
+    localStorage.setItem(key, JSON.stringify(newMoments))
+    console.log('💾 保存朋友圈:', key, newMoments.length, '条')
   }
 
   const generateInitialMoments = async () => {
@@ -117,7 +128,7 @@ function IdolMoments({ onClose }) {
         }
         return m
       })
-      localStorage.setItem(`moments-${currentIdol?.id}`, JSON.stringify(updated))
+      saveMoments(updated)
       return updated
     })
   }
@@ -147,7 +158,7 @@ function IdolMoments({ onClose }) {
         }
         return m
       })
-      localStorage.setItem(`moments-${currentIdol?.id}`, JSON.stringify(updated))
+      saveMoments(updated)
       return updated
     })
 
@@ -181,7 +192,7 @@ function IdolMoments({ onClose }) {
             }
             return m
           })
-          localStorage.setItem(`moments-${currentIdol?.id}`, JSON.stringify(updated))
+          saveMoments(updated)
           return updated
         })
       }
@@ -213,6 +224,7 @@ function IdolMoments({ onClose }) {
         }
         return m
       })
+      saveMoments(updated)
       return updated
     })
 
@@ -248,7 +260,7 @@ function IdolMoments({ onClose }) {
             }
             return m
           })
-          localStorage.setItem(`moments-${currentIdol?.id}`, JSON.stringify(updated))
+          saveMoments(updated)
           return updated
         })
       }

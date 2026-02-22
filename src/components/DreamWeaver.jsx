@@ -12,26 +12,39 @@ function DreamWeaver({ onClose }) {
   const [dailyEvent, setDailyEvent] = useState(null)
   const [view, setView] = useState('main') // 'main' | 'new' | 'journal' | 'daily'
 
+  // 获取稳定的存储 key（基于 idol name）
+  const getStorageKey = () => `dreams-${currentIdol?.name || 'default'}`
+
   useEffect(() => {
-    loadDreams()
-    checkDailyEvent()
-  }, [currentIdol])
+    if (currentIdol?.name) {
+      loadDreams()
+      checkDailyEvent()
+    }
+  }, [currentIdol?.name])
 
   const loadDreams = () => {
-    const savedDreams = JSON.parse(localStorage.getItem(`dreams-${currentIdol?.id}`) || '[]')
+    const key = getStorageKey()
+    const savedDreams = JSON.parse(localStorage.getItem(key) || '[]')
+    console.log('📖 加载梦境:', key, savedDreams.length, '条')
     setDreams(savedDreams)
+  }
+
+  const saveDreams = (newDreams) => {
+    const key = getStorageKey()
+    localStorage.setItem(key, JSON.stringify(newDreams))
+    console.log('💾 保存梦境:', key, newDreams.length, '条')
   }
 
   const checkDailyEvent = () => {
     const today = new Date().toDateString()
-    const lastEvent = localStorage.getItem(`daily-event-date-${currentIdol?.id}`)
+    const eventKey = `daily-event-${currentIdol?.name || 'default'}`
+    const lastEvent = localStorage.getItem(`daily-event-date-${currentIdol?.name || 'default'}`)
     
     if (lastEvent !== today) {
-      // ��成今日事件
       generateDailyEvent()
-      localStorage.setItem(`daily-event-date-${currentIdol?.id}`, today)
+      localStorage.setItem(`daily-event-date-${currentIdol?.name || 'default'}`, today)
     } else {
-      const savedEvent = JSON.parse(localStorage.getItem(`daily-event-${currentIdol?.id}`) || 'null')
+      const savedEvent = JSON.parse(localStorage.getItem(eventKey) || 'null')
       setDailyEvent(savedEvent)
     }
   }
@@ -70,7 +83,8 @@ function DreamWeaver({ onClose }) {
       }
       
       setDailyEvent(event)
-      localStorage.setItem(`daily-event-${currentIdol?.id}`, JSON.stringify(event))
+      const eventKey = `daily-event-${currentIdol?.name || 'default'}`
+      localStorage.setItem(eventKey, JSON.stringify(event))
     } catch (error) {
       const event = {
         type: eventType,
@@ -120,7 +134,7 @@ function DreamWeaver({ onClose }) {
       // 保存到梦境本
       const updatedDreams = [newDream, ...dreams]
       setDreams(updatedDreams)
-      localStorage.setItem(`dreams-${currentIdol?.id}`, JSON.stringify(updatedDreams))
+      saveDreams(updatedDreams)  // 使用新的保存函数
       
       setDreamInput('')
     } catch (error) {
@@ -134,6 +148,10 @@ function DreamWeaver({ onClose }) {
         starred: false
       }
       setCurrentDream(newDream)
+      // 即使出错也保存
+      const updatedDreams = [newDream, ...dreams]
+      setDreams(updatedDreams)
+      saveDreams(updatedDreams)
     }
     setGenerating(false)
   }
@@ -162,7 +180,7 @@ function DreamWeaver({ onClose }) {
       
       const updatedDreams = [newDream, ...dreams]
       setDreams(updatedDreams)
-      localStorage.setItem(`dreams-${currentIdol?.id}`, JSON.stringify(updatedDreams))
+      saveDreams(updatedDreams)  // 使用新的保存函数
     } catch (error) {
       console.error('生成随机梦境失败:', error)
     }
@@ -174,13 +192,13 @@ function DreamWeaver({ onClose }) {
       d.id === dreamId ? { ...d, starred: !d.starred } : d
     )
     setDreams(updatedDreams)
-    localStorage.setItem(`dreams-${currentIdol?.id}`, JSON.stringify(updatedDreams))
+    saveDreams(updatedDreams)
   }
 
   const deleteDream = (dreamId) => {
     const updatedDreams = dreams.filter(d => d.id !== dreamId)
     setDreams(updatedDreams)
-    localStorage.setItem(`dreams-${currentIdol?.id}`, JSON.stringify(updatedDreams))
+    saveDreams(updatedDreams)
     if (currentDream?.id === dreamId) {
       setCurrentDream(null)
     }
