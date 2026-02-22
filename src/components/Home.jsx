@@ -7,6 +7,8 @@ import Memory from './Memory'
 import Forum from './Forum'
 import IdolMoments from './IdolMoments'
 import DreamWeaver from './DreamWeaver'
+import FateSystem from './FateSystem'
+import IdolTheater from './IdolTheater'
 import './Home.css'
 
 function Home({ onNavigate }) {
@@ -19,6 +21,8 @@ function Home({ onNavigate }) {
   const [showForum, setShowForum] = useState(false)
   const [showMoments, setShowMoments] = useState(false)
   const [showDream, setShowDream] = useState(false)
+  const [showFate, setShowFate] = useState(false)
+  const [showTheater, setShowTheater] = useState(false)
 
   // 更新时间
   useEffect(() => {
@@ -116,6 +120,20 @@ function Home({ onNavigate }) {
               </div>
               <span className="app-name">梦境</span>
             </div>
+
+            <div className="app-icon-wrapper" onClick={() => setShowFate(true)}>
+              <div className="app-icon bg-light-blue">
+                <span>🔮</span>
+              </div>
+              <span className="app-name">命运</span>
+            </div>
+
+            <div className="app-icon-wrapper" onClick={() => setShowTheater(true)}>
+              <div className="app-icon bg-light-blue">
+                <span>🎪</span>
+              </div>
+              <span className="app-name">剧场</span>
+            </div>
           </div>
 
           {/* 右下角卡片：最近一条消息 */}
@@ -167,6 +185,8 @@ function Home({ onNavigate }) {
       {showForum && <Forum onClose={() => setShowForum(false)} />}
       {showMoments && <IdolMoments onClose={() => setShowMoments(false)} />}
       {showDream && <DreamWeaver onClose={() => setShowDream(false)} />}
+      {showFate && <FateSystem onClose={() => setShowFate(false)} />}
+      {showTheater && <IdolTheater onClose={() => setShowTheater(false)} />}
     </>
   )
 }

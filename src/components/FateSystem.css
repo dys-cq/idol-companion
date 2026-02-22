@@ -1,0 +1,369 @@
+.fate-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.fate-container {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1a1a2e 0%, #2d1b4e 50%, #1a1a2e 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .fate-container {
+    width: 400px;
+    height: 850px;
+    max-height: 95vh;
+    border-radius: 32px;
+  }
+}
+
+.fate-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fate-header h2 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.achievement-count {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: #1a1a2e;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* 好感度卡片 */
+.affection-card {
+  margin: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 2px solid;
+  position: relative;
+  overflow: hidden;
+}
+
+.affection-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.affection-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stage-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.stage-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.affection-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.heart-icon {
+  font-size: 28px;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.affection-value .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.next-hint {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 统计数据 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-icon {
+  font-size: 20px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 命运阶段 */
+.fate-stages {
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.fate-stages h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.stage-item.unlocked {
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: var(--stage-color);
+}
+
+.stage-item.current {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.stage-icon {
+  font-size: 24px;
+}
+
+.stage-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.stage-requirement {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 成就系统 */
+.achievements-section {
+  flex: 1;
+  padding: 0 16px;
+  overflow-y: auto;
+}
+
+.achievements-section h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.achievement-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.achievement-badge.unlocked {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.achievement-badge.locked {
+  opacity: 0.5;
+}
+
+.achievement-badge:hover {
+  transform: scale(1.05);
+}
+
+.badge-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.badge-name {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
+/* 成就详情弹窗 */
+.achievement-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.achievement-detail-card {
+  background: linear-gradient(135deg, #2d1b4e, #1a1a2e);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.achievement-detail-card .detail-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.achievement-detail-card h4 {
+  color: #fbbf24;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.achievement-detail-card p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.achievement-detail-card button {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: none;
+  border-radius: 20px;
+  padding: 12px 32px;
+  color: #1a1a2e;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* 滚动条 */
+.achievements-section::-webkit-scrollbar {
+  width: 4px;
+}
+
+.achievements-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.achievements-section::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}

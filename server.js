@@ -985,6 +985,120 @@ app.post('/api/daily-event', async (req, res) => {
   }
 })
 
+// ==================== 剧场 API ====================
+
+// 生成剧场开场
+app.post('/api/theater/scene', async (req, res) => {
+  try {
+    const { scene, cast, currentIdol } = req.body
+
+    console.log(`🎭 剧场开场: ${scene.name}`)
+
+    const castInfo = cast.map(c => `${c.role}: ${c.actor?.name || '神秘人'}`).join('\n')
+
+    const prompt = `你是一个剧本导演，正在为"${scene.name}"场景编写开场对话。
+
+【场景设定】${scene.setting}
+【演员阵容】
+${castInfo}
+
+【要求】
+1. 生成 3-5 轮对话，让剧情开始
+2. 每个角色要有鲜明的性格特点
+3. 对话要自然有趣，推动剧情发展
+4. 返回 JSON 数组格式：
+[{"role":"角色名","actor":{"name":"演员名","avatar":"emoji"},"content":"台词内容"}]
+5. 台词不要太长，20-60字为宜`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 800
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 60000
+      }
+    )
+
+    let content = response.data.choices[0].message.content || '[]'
+    let dialogue = []
+    
+    const jsonMatch = content.match(/\[[\s\S]*\]/)
+    if (jsonMatch) {
+      try {
+        dialogue = JSON.parse(jsonMatch[0])
+      } catch (e) {
+        console.error('解析剧场对话失败:', e)
+      }
+    }
+
+    res.json({ success: true, dialogue })
+  } catch (error) {
+    console.error('Theater Scene Error:', error.message)
+    res.json({ 
+      success: true, 
+      dialogue: [
+        { role: '旁白', actor: { name: '旁白', avatar: '📖' }, content: '故事即将开始...' }
+      ]
+    })
+  }
+})
+
+// 继续剧场对话
+app.post('/api/theater/continue', async (req, res) => {
+  try {
+    const { scene, dialogue, userInput, currentIdol } = req.body
+
+    const historyStr = dialogue.slice(-6).map(d => `${d.actor?.name}: ${d.content}`).join('\n')
+
+    const prompt = `你是剧本导演，继续"${scene.name}"场景的剧情。
+
+【场景】${scene.name}
+【最近的对话】
+${historyStr}
+
+【观众互动】观众说："${userInput}"
+
+【要求】
+1. 根据观众互动，生成 1-3 个角色的回应
+2. 剧情要有趣，可以加入冲突或转折
+3. 返回 JSON 数组：[{"role":"角色","actor":{"name":"演员","avatar":"emoji"},"content":"台词"}]`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 400
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 45000
+      }
+    )
+
+    let content = response.data.choices[0].message.content || '[]'
+    let responses = []
+    
+    const jsonMatch = content.match(/\[[\s\S]*\]/)
+    if (jsonMatch) {
+      try {
+        responses = JSON.parse(jsonMatch[0])
+      } catch (e) {}
+    }
+
+    res.json({ success: true, responses })
+  } catch (error) {
+    console.error('Theater Continue Error:', error.message)
+    res.json({ success: true, responses: [] })
+  }
+})
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running at http://0.0.0.0:${PORT}`)
   console.log(`📡 API proxy: /api/chat -> ${API_BASE_URL}`)
