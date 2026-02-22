@@ -5,6 +5,8 @@ import Anniversary from './Anniversary'
 import Messages from './Messages'
 import Memory from './Memory'
 import Forum from './Forum'
+import IdolMoments from './IdolMoments'
+import DreamWeaver from './DreamWeaver'
 import './Home.css'
 
 function Home({ onNavigate }) {
@@ -15,6 +17,8 @@ function Home({ onNavigate }) {
   const [showMessages, setShowMessages] = useState(false)
   const [showMemory, setShowMemory] = useState(false)
   const [showForum, setShowForum] = useState(false)
+  const [showMoments, setShowMoments] = useState(false)
+  const [showDream, setShowDream] = useState(false)
 
   // 更新时间
   useEffect(() => {
@@ -98,6 +102,20 @@ function Home({ onNavigate }) {
               </div>
               <span className="app-name">论坛</span>
             </div>
+
+            <div className="app-icon-wrapper" onClick={() => setShowMoments(true)}>
+              <div className="app-icon bg-light-blue">
+                <span>🎭</span>
+              </div>
+              <span className="app-name">朋友圈</span>
+            </div>
+
+            <div className="app-icon-wrapper" onClick={() => setShowDream(true)}>
+              <div className="app-icon bg-light-blue">
+                <span>🌙</span>
+              </div>
+              <span className="app-name">梦境</span>
+            </div>
           </div>
 
           {/* 右下角卡片：最近一条消息 */}
@@ -147,6 +165,8 @@ function Home({ onNavigate }) {
       {showMessages && <Messages onClose={() => setShowMessages(false)} />}
       {showMemory && <Memory onClose={() => setShowMemory(false)} />}
       {showForum && <Forum onClose={() => setShowForum(false)} />}
+      {showMoments && <IdolMoments onClose={() => setShowMoments(false)} />}
+      {showDream && <DreamWeaver onClose={() => setShowDream(false)} />}
     </>
   )
 }

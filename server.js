@@ -655,6 +655,336 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
+// ==================== 朋友圈 API ====================
+
+// 生成朋友圈动态
+app.post('/api/moments/generate', async (req, res) => {
+  try {
+    const { idol, index } = req.body
+    if (!idol || !idol.name) {
+      return res.status(400).json({ error: '缺少 Idol 信息' })
+    }
+
+    console.log(`📱 生成朋友圈动态: ${idol.name}`)
+
+    const topics = [
+      '���享今天的心情', '分享一件小事', '推荐一首歌', '聊聊天气',
+      '深夜感想', '周末计划', '美食分享', '最近在追的剧',
+      '分享一张照片', '问大家一个问题', '分享一个有趣的发现'
+    ]
+    
+    const topic = topics[Math.floor(Math.random() * topics.length)]
+
+    const prompt = `你是${idol.name}，在朋友圈发一条动态。
+
+【人设】职业：${idol.occupation || '虚拟偶像'}，性格：${idol.personality || '活泼'}，风格：${idol.speakingStyle || '随性'}
+【主题】${topic}
+
+【要求】
+1. 内容真实自然，像发朋友圈（30-100字）
+2. 可以加emoji，但不要太多
+3. 返回JSON：{"content":"动态内容"}
+4. 不要用双引号，用单引号代替`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 200
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 45000
+      }
+    )
+
+    let content = response.data.choices[0].message.content || '今天心情不错~'
+    let momentContent = '今天心情不错~'
+    
+    const jsonMatch = content.match(/\{[\s\S]*\}/)
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0].replace(/'/g, '"'))
+        if (parsed.content) momentContent = parsed.content
+      } catch (e) {
+        momentContent = content.slice(0, 100)
+      }
+    } else {
+      momentContent = content.slice(0, 100)
+    }
+
+    res.json({
+      success: true,
+      moment: {
+        id: Date.now() + (index || 0),
+        content: momentContent,
+        images: [],
+        author: { name: idol.name, avatar: idol.avatar || '🎭' },
+        timestamp: new Date(Date.now() - (index || 0) * 3600000).toISOString(),
+        likes: Math.floor(Math.random() * 15) + 1,
+        liked: false,
+        comments: [],
+        gifts: []
+      }
+    })
+  } catch (error) {
+    console.error('Generate Moment Error:', error.message)
+    res.status(500).json({ error: '生成动态失败', message: error.message })
+  }
+})
+
+// 礼物感谢
+app.post('/api/moments/gift-thanks', async (req, res) => {
+  try {
+    const { idol, gift, momentContent } = req.body
+    
+    const prompt = `你是${idol.name}，刚刚收到粉丝送的${gift.name}${gift.emoji}，在朋友圈评论区感谢TA。
+
+【人设】风格：${idol.speakingStyle || '随性'}
+【收到的礼物】${gift.name} ${gift.emoji}
+
+【要求】
+1. 感谢要真诚自然，符合人设（15-40字）
+2. 可以加表情
+3. 直接返回感谢内容，不要加引号`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 100
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 30000
+      }
+    )
+
+    const thanks = response.data.choices[0].message.content.trim().slice(0, 60)
+    
+    res.json({ success: true, thanks })
+  } catch (error) {
+    console.error('Gift Thanks Error:', error.message)
+    res.json({ success: true, thanks: '谢谢你的礼物！好喜欢~ ❤️' })
+  }
+})
+
+// 朋友圈评论回复
+app.post('/api/moments/reply', async (req, res) => {
+  try {
+    const { idol, momentContent, userComment } = req.body
+    
+    const prompt = `你是${idol.name}，看到粉丝在你的朋友圈动态下评论。
+
+【你的动态】${momentContent}
+【粉丝评论】${userComment}
+【你的风格】${idol.speakingStyle || '随性'}
+
+【要求】
+1. 回复自然亲切，符合人设（10-40字）
+2. 可以是感谢、互动或调侃
+3. 直��返回回复内容`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 80
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 30000
+      }
+    )
+
+    const reply = response.data.choices[0].message.content.trim().slice(0, 50)
+    
+    res.json({ success: true, reply })
+  } catch (error) {
+    console.error('Moments Reply Error:', error.message)
+    res.json({ success: true, reply: '谢谢评论~' })
+  }
+})
+
+// ==================== 梦境编织 API ====================
+
+// 生成梦境
+app.post('/api/dream/generate', async (req, res) => {
+  try {
+    const { idol, userDream, userMemories } = req.body
+    const userName = userMemories?.['用户名字'] || '你'
+
+    console.log(`🌙 编织梦境: ${idol.name}`)
+
+    const prompt = `你是${idol.name}，一个温柔的梦想编织者。${userName}告诉你TA想做的梦，请为TA编织一个独特而美好的梦境。
+
+【用户愿望】${userDream}
+【你的人设】性格：${idol.personality || '温柔'}，风格：${idol.speakingStyle || '诗意'}
+
+【要求】
+1. 梦境故事要美轮美奂，有画面感（100-200字）
+2. 将${userName}的愿望融入梦境中
+3. 你可以出现在梦境中陪伴TA
+4. 结尾给出一个温暖的解读（30-50字）
+5. 返回JSON：{"dreamStory":"梦境故事","interpretation":"解读"}`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.85,
+        max_tokens: 500
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 60000
+      }
+    )
+
+    let content = response.data.choices[0].message.content || ''
+    let dreamStory = '在一片星空下，你漫步在云端...'
+    let interpretation = '这个梦象征着美好的希望'
+    
+    const jsonMatch = content.match(/\{[\s\S]*\}/)
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0].replace(/'/g, '"'))
+        if (parsed.dreamStory) dreamStory = parsed.dreamStory
+        if (parsed.interpretation) interpretation = parsed.interpretation
+      } catch (e) {}
+    }
+
+    res.json({
+      success: true,
+      dreamStory,
+      interpretation
+    })
+  } catch (error) {
+    console.error('Dream Generate Error:', error.message)
+    res.json({
+      success: true,
+      dreamStory: `在${idol?.name}的陪伴下，你走进了一个美丽的梦境...星星在周围闪烁，仿佛整个宇宙都在为你歌唱。你们一起漫步在银河之上，每一步都留下闪光的足迹。`,
+      interpretation: '这是一个充满希望的梦，预示着美好的未来和无限的可能'
+    })
+  }
+})
+
+// 随机梦境
+app.post('/api/dream/random', async (req, res) => {
+  try {
+    const { idol, userMemories } = req.body
+    const userName = userMemories?.['用户名字'] || '你'
+
+    const themes = [
+      '在星空下飞翔', '深海探险', '云端城堡', '穿越时空',
+      '森林奇遇', '月光下的舞蹈', '彩虹桥', '星空漫步'
+    ]
+    const theme = themes[Math.floor(Math.random() * themes.length)]
+
+    const prompt = `你是${idol.name}，为${userName}编织一个关于"${theme}"的梦境。
+
+【人设】性格：${idol.personality || '温柔'}
+
+【要求】
+1. 梦境故事美轮美奂（80-150字）
+2. 包含${userName}和你一起经历
+3. 给出温暖的解读
+4. 返回JSON：{"dreamStory":"故事","interpretation":"解读"}`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.9,
+        max_tokens: 400
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 45000
+      }
+    )
+
+    let content = response.data.choices[0].message.content || ''
+    let dreamStory = '今晚的星空格外美丽...'
+    let interpretation = '让梦境带你进入奇幻世界'
+    
+    const jsonMatch = content.match(/\{[\s\S]*\}/)
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0].replace(/'/g, '"'))
+        if (parsed.dreamStory) dreamStory = parsed.dreamStory
+        if (parsed.interpretation) interpretation = parsed.interpretation
+      } catch (e) {}
+    }
+
+    res.json({ success: true, dreamStory, interpretation })
+  } catch (error) {
+    console.error('Random Dream Error:', error.message)
+    res.json({
+      success: true,
+      dreamStory: '在梦的世界里，一切都变得可能。星星在你身边飞舞，月光为你铺路...',
+      interpretation: '这是命运送给你的礼物'
+    })
+  }
+})
+
+// 日常事件
+app.post('/api/daily-event', async (req, res) => {
+  try {
+    const { idol, eventType, userName } = req.body
+
+    const eventTypes = {
+      morning: '早间问候，可以是叫醒、鼓励或分享今天计划',
+      afternoon: '午间问候，可以是提醒休息、分享心情',
+      night: '晚安祝福，可以是温馨的睡前话语'
+    }
+
+    const prompt = `你是${idol.name}，给${userName}发送一条${eventTypes[eventType]}。
+
+【人设】风格：${idol.speakingStyle || '温暖'}
+【时间】${eventType === 'morning' ? '早上' : eventType === 'afternoon' ? '下午' : '晚上'}
+
+【要求】
+1. 自然温暖，像朋友问候（20-50字）
+2. 可以加适当的emoji
+3. 直接返回问候内容`
+
+    const response = await axios.post(
+      `${API_BASE_URL}/chat/completions`,
+      {
+        model: 'kimi-k2.5',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.85,
+        max_tokens: 100
+      },
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+        timeout: 30000
+      }
+    )
+
+    const content = response.data.choices[0].message.content.trim().slice(0, 80)
+    
+    res.json({ success: true, content })
+  } catch (error) {
+    console.error('Daily Event Error:', error.message)
+    const defaults = {
+      morning: '早上好！新的一天开始了，今天也要元气满满哦~ ☀️',
+      afternoon: '下午好！记得休息一下，喝杯水~ 🌤️',
+      night: '晚安，做个好梦~ 梦里见 🌙'
+    }
+    res.json({ success: true, content: defaults[eventType] })
+  }
+})
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running at http://0.0.0.0:${PORT}`)
   console.log(`📡 API proxy: /api/chat -> ${API_BASE_URL}`)
